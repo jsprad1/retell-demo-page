@@ -33,25 +33,84 @@
 
     <!-- Content -->
     <div class="p-6">
-      <div class="text-center">
+
+      <!-- Initial State - Phone Form -->
+      <div id="state-form" class="text-center">
         <div class="mb-6">
           <div class="w-20 h-20 bg-brand-accent rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-10 h-10 text-brand-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
             </svg>
           </div>
-          <p class="text-gray-600 mb-4">Click the phone button below to request a callback. We'll call you immediately so you can experience your custom AI receptionist!</p>
-          <p class="text-sm text-gray-500">You'll receive a call from (772) 205-3109</p>
+          <p class="text-gray-600 mb-4">Enter your phone number and we'll call you immediately so you can experience your custom AI receptionist!</p>
         </div>
 
-        <!-- Error state for missing agent -->
-        <div id="error-state" class="hidden">
-          <div class="bg-red-100 rounded-lg p-4 mb-4">
-            <p class="text-red-600 font-medium">Invalid demo link</p>
-            <p class="text-red-500 text-sm">Please contact us for a valid demo link.</p>
+        <form id="callback-form" class="space-y-4">
+          <div>
+            <input
+              type="tel"
+              id="phone-input"
+              placeholder="(555) 123-4567"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-accent focus:border-transparent text-center text-lg"
+              required
+            >
           </div>
+          <button
+            type="submit"
+            class="w-full bg-brand-accent hover:bg-opacity-90 text-brand-dark font-bold py-4 px-6 rounded-xl text-lg transition-all transform hover:scale-105 shadow-lg"
+          >
+            Call Me Now
+          </button>
+        </form>
+
+        <p class="text-xs text-gray-400 mt-4">You'll receive a call from (772) 205-3109</p>
+      </div>
+
+      <!-- Calling State -->
+      <div id="state-calling" class="text-center hidden">
+        <div class="mb-6">
+          <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            </svg>
+          </div>
+          <p class="text-green-600 font-bold text-lg mb-2">Calling you now!</p>
+          <p class="text-gray-600">Please answer the call from (772) 205-3109</p>
         </div>
       </div>
+
+      <!-- Success State -->
+      <div id="state-success" class="text-center hidden">
+        <div class="mb-6">
+          <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <p class="text-gray-700 font-bold text-lg mb-2">Call Initiated!</p>
+          <p class="text-gray-600 mb-4">Your phone should be ringing. Enjoy your demo!</p>
+        </div>
+        <a href="https://spradlinconsulting.tech" class="block text-brand-medium hover:text-brand-dark text-sm font-medium">
+          Learn more about Voice AI solutions
+        </a>
+      </div>
+
+      <!-- Error State -->
+      <div id="state-error" class="text-center hidden">
+        <div class="mb-6">
+          <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <p class="text-red-600 font-bold text-lg mb-2">Something went wrong</p>
+          <p id="error-message" class="text-gray-600 mb-4">Unable to place call. Please try again.</p>
+        </div>
+        <button onclick="location.reload()" class="w-full bg-brand-dark hover:bg-brand-medium text-white font-bold py-4 px-6 rounded-xl text-lg transition-all">
+          Try Again
+        </button>
+      </div>
+
     </div>
 
     <!-- Footer -->
@@ -63,7 +122,6 @@
 
   </div>
 
-  <!-- Retell Callback Widget - dynamically injected -->
   <script>
     // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -73,23 +131,78 @@
     // Display business name
     document.getElementById('business-name').textContent = decodeURIComponent(businessName);
 
-    // Check for agent ID
-    if (!agentId) {
-      document.getElementById('error-state').classList.remove('hidden');
-    } else {
-      // Dynamically create and inject the Retell widget script
-      const widgetScript = document.createElement('script');
-      widgetScript.id = 'retell-widget';
-      widgetScript.src = 'https://dashboard.retellai.com/retell-widget.js';
-      widgetScript.type = 'module';
-      widgetScript.setAttribute('data-public-key', 'public_key_d9fd9737636abfc2a4c73');
-      widgetScript.setAttribute('data-agent-id', agentId);
-      widgetScript.setAttribute('data-widget', 'callback');
-      widgetScript.setAttribute('data-phone-number', '+17722053109');
-      widgetScript.setAttribute('data-title', 'Request Demo Call');
-      widgetScript.setAttribute('data-color', '#d4a574');
-      document.head.appendChild(widgetScript);
+    // State management
+    function showState(stateName) {
+      const states = ['form', 'calling', 'success', 'error'];
+      states.forEach(s => {
+        document.getElementById(`state-${s}`).classList.add('hidden');
+      });
+      document.getElementById(`state-${stateName}`).classList.remove('hidden');
     }
+
+    // Check for agent ID on load
+    if (!agentId) {
+      document.getElementById('error-message').textContent = 'Invalid demo link. Please contact us for a valid link.';
+      showState('error');
+    }
+
+    // Format phone number as user types
+    const phoneInput = document.getElementById('phone-input');
+    phoneInput.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length > 10) value = value.slice(0, 10);
+
+      if (value.length >= 6) {
+        value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6)}`;
+      } else if (value.length >= 3) {
+        value = `(${value.slice(0,3)}) ${value.slice(3)}`;
+      }
+      e.target.value = value;
+    });
+
+    // Handle form submission
+    document.getElementById('callback-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      if (!agentId) {
+        document.getElementById('error-message').textContent = 'No agent ID provided.';
+        showState('error');
+        return;
+      }
+
+      const phoneNumber = phoneInput.value.replace(/\D/g, '');
+
+      if (phoneNumber.length !== 10) {
+        alert('Please enter a valid 10-digit phone number');
+        return;
+      }
+
+      showState('calling');
+
+      try {
+        const response = await fetch('/api/call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            agent_id: agentId,
+            phone_number: '+1' + phoneNumber
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to place call');
+        }
+
+        showState('success');
+
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('error-message').textContent = error.message || 'Failed to place call. Please try again.';
+        showState('error');
+      }
+    });
   </script>
 
 </body>
