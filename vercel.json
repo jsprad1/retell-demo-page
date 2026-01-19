@@ -1,10 +1,5 @@
 {
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ],
-  "functions": {
-    "api/call.js": {
-      "runtime": "@vercel/node@3"
-    }
-  }
+  ]
 }
