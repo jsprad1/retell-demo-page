@@ -1,0 +1,11 @@
+{
+  "name": "retell-demo-page",
+  "version": "1.0.0",
+  "description": "Voice AI demo landing page for Spradlin Consulting",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "retell-client-js-sdk": "^2.0.0"
+  }
+}
