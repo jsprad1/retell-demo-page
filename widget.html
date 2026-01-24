@@ -451,18 +451,11 @@
 
   <script>
     // ============================================
-    // CONFIGURATION - Update these values!
+    // CONFIGURATION
     // ============================================
     const CONFIG = {
       // Your n8n webhook URL (POST endpoint that returns agent_id)
-      webhookUrl: 'https://n8n.srv872189.hstgr.cloud/webhook/church-demo',
-
-      // Your Retell API key (for phone calls - keep secure!)
-      // For production, this should go through your backend
-      retellApiKey: 'key_68696ee8cf1f143c0bae8050a246',
-
-      // Your Retell phone number (for outbound calls)
-      fromPhoneNumber: '+17722053109'
+      webhookUrl: 'https://n8n.srv872189.hstgr.cloud/webhook/church-demo'
     };
     // ============================================
 
@@ -562,28 +555,25 @@
         document.getElementById('confirmPhoneBtn').textContent = 'Calling...';
         document.getElementById('confirmPhoneBtn').disabled = true;
 
-        // Create phone call via Retell API
-        // NOTE: In production, route this through your backend!
-        const response = await fetch('https://api.retellai.com/create-phone-call', {
+        // Create phone call via backend API
+        const response = await fetch('/api/call', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${CONFIG.retellApiKey}`,
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             agent_id: currentAgentId,
-            to_number: formattedPhone,
-            from_number: CONFIG.fromPhoneNumber
+            phone_number: formattedPhone
           })
         });
 
         const result = await response.json();
 
-        if (response.ok) {
+        if (result.success) {
           document.getElementById('phoneModal').classList.remove('active');
           alert('Your phone will ring in a moment! Answer the call to talk to your AI receptionist.');
         } else {
-          throw new Error(result.error || 'Failed to initiate call');
+          throw new Error(result.message || 'Failed to initiate call');
         }
       } catch (error) {
         console.error('Phone call error:', error);
